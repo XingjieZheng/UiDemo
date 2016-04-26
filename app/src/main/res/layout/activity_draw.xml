@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/img_guidepage_1"
+    tools:context="com.xingjiezheng.uidemo.activity.DrawActivity">
+
+    <com.xingjiezheng.uidemo.widget.DrawView
+        android:id="@+id/drawView"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:visibility="gone" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/drawView"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        android:visibility="gone"
+        app:backgroundTint="@color/material_deep_teal_500" />
+
+  <!--  <com.xingjiezheng.uidemo.widget.MaskView
+        android:id="@+id/maskView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />-->
+
+    <com.xingjiezheng.uidemo.widget.MaskAndTipsView
+        android:id="@+id/maskAndTipsView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+</RelativeLayout>
