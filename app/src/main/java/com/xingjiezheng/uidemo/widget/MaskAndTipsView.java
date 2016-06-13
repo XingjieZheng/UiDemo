@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -18,13 +20,10 @@ public class MaskAndTipsView extends RelativeLayout {
 
     private Context context;
     private MaskView maskView;
-    private TextView textView;
-    private int textViewPaddingLeft;
-    private int textViewPaddingTop;
-    private int textColor;
-    private int textSize;
+    private RelativeLayout layoutTips;
+    private ImageView imageArrow;
+    private TextView tvTipsContent;
     private int distance;
-    private int textLineSpace;
 
     private RelativeLayout.LayoutParams layoutParams;
 
@@ -40,46 +39,66 @@ public class MaskAndTipsView extends RelativeLayout {
         super(context, attrs, defStyleAttr);
         this.context = context;
         init();
+        findViews();
+        setListeners();
     }
 
     private void init() {
         // TODO: 2016/4/25
-        textViewPaddingLeft = 20;
-        textViewPaddingTop = 15;
-        textColor = 0xff6b0cad;
-        textSize = 12;
         distance = 10;
-        textLineSpace = 5;
 
+    }
 
-        maskView = new MaskView(context);
+    private void findViews() {
+        LayoutInflater.from(context).inflate(R.layout.mask_and_tips_view, this, true);
+        maskView = (MaskView) findViewById(R.id.maskView);
+        layoutTips = (RelativeLayout) findViewById(R.id.layoutTips);
+        imageArrow = (ImageView) findViewById(R.id.imageArrow);
+        tvTipsContent = (TextView) findViewById(R.id.tvTipsContent);
+    }
+
+    private void setListeners() {
         maskView.setOnShapeClickListener(new MaskView.OnShapeClickListener() {
             @Override
             public void onclick(int index) {
                 Log.e("ShapeClick", "index:" + index);
             }
         });
-        addView(maskView);
-
-        textView = new TextView(context);
-        textView.setGravity(Gravity.CENTER);
-        textView.setPadding(textViewPaddingLeft, textViewPaddingTop, textViewPaddingLeft, textViewPaddingTop);
-        textView.setTextColor(textColor);
-        textView.setTextSize(textSize);
-        textView.setBackgroundResource(R.drawable.bg_help);
-        textView.setLineSpacing(textLineSpace, 0);
-//        addView(textView, layoutParams);
     }
 
     public void showDisLikeMask(Rect rect, int radius) {
         maskView.setShape(MaskViewFactory.createACycleMask(rect, radius));
-
-        removeView(textView);
-        textView.setText("现在开始表态吧！\n祝你好运");
-        textView.setY(rect.bottom + distance);
-        layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        addView(textView, layoutParams);
+        setTipsViewParams(false, rect.bottom + distance, this.getWidth() - (rect.right - radius), "点此代表不喜欢，你不会喜欢Ta\n我们也不会告诉Ta");
     }
 
+    public void showLikeMask(Rect rect, int radius) {
+        maskView.setShape(MaskViewFactory.createACycleMask(rect, radius));
+        setTipsViewParams(false, rect.bottom + distance, this.getWidth() - (rect.right - radius), "点此代表喜欢，如果Ta也喜欢你\\n你们就可以成为好友");
+//        setTipsViewParams(true, rect.bottom + distance, rect.left + radius, "点此代表喜欢，如果Ta也喜欢你\n你们就可以成为好友");
+    }
+
+    public void showLikeAndDislikeMask(Rect rect, int radius) {
+        maskView.setShape(MaskViewFactory.createACycleMask(rect, radius));
+        setTipsViewParams(false, rect.bottom + distance, this.getWidth() - (rect.right - radius), "\u3000\u3000现在开始表态吧！\u3000\u3000\n\u3000\u3000祝你好运");
+    }
+
+    private void setTipsViewParams(final boolean isLeft, int tipsLocationY, final int arrowDistance, String tvContent) {
+        layoutTips.setY(tipsLocationY);
+        tvTipsContent.setText(tvContent);
+        layoutTips.post(new Runnable() {
+            @Override
+            public void run() {
+                removeView(layoutTips);
+                layoutParams = (RelativeLayout.LayoutParams) layoutTips.getLayoutParams();
+                if (isLeft) {
+                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                    imageArrow.setX(arrowDistance - (imageArrow.getWidth() >> 1));
+                } else {
+                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    imageArrow.setX(layoutTips.getWidth() - arrowDistance - (imageArrow.getWidth() >> 1));
+                }
+                addView(layoutTips, layoutParams);
+            }
+        });
+    }
 }

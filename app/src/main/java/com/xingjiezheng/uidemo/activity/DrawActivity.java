@@ -1,19 +1,16 @@
 package com.xingjiezheng.uidemo.activity;
 
-import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
 import com.xingjiezheng.uidemo.R;
 import com.xingjiezheng.uidemo.widget.DrawView;
-import com.xingjiezheng.uidemo.widget.IMaskShape;
 import com.xingjiezheng.uidemo.widget.MaskAndTipsView;
 import com.xingjiezheng.uidemo.widget.MaskView;
-import com.xingjiezheng.uidemo.widget.MaskViewFactory;
 
 public class DrawActivity extends AppCompatActivity {
 
@@ -30,6 +27,8 @@ public class DrawActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_draw);
+        getSupportActionBar().hide();
+
 
         drawView = (DrawView) findViewById(R.id.drawView);
         drawView.setOnClickListener(new View.OnClickListener() {
@@ -57,19 +56,16 @@ public class DrawActivity extends AppCompatActivity {
             }
         });
 
-//        maskView = (MaskView) findViewById(R.id.maskView);
-////        maskView.setShape(MaskViewFactory.createARoundRectMask(new Rect(100, 500, 900, 700), 100, 100));
-////        maskView.setShape(MaskViewFactory.createDoubleSameCyclesMask(new Rect(100, 500, 900, 700), 100));
-//        maskView.setShape(MaskViewFactory.createAIconMask(new Rect(100, 500, 900, 700),
-//                BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher)));
-//        maskView.setOnShapeClickListener(new MaskView.OnShapeClickListener() {
-//            @Override
-//            public void onclick(int index) {
-//                Log.e("ShapeClick", "index:" + index);
-//            }
-//        });
 
         maskAndTipsView = (MaskAndTipsView) findViewById(R.id.maskAndTipsView);
-        maskAndTipsView.showDisLikeMask(new Rect(400, 400, 600, 600), 100);
+        fab.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.i("fab", "left " + fab.getLeft() + " top " + fab.getTop() + " right " + fab.getRight() + " bottom " + fab.getBottom()
+                        + " radius " + (fab.getRight() - fab.getLeft() >> 1));
+                maskAndTipsView.showLikeAndDislikeMask(new Rect(fab.getLeft(), fab.getTop(), fab.getRight(), fab.getBottom()), (fab.getRight() - fab.getLeft()) >> 1);
+            }
+        });
+
     }
 }

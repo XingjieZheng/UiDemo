@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 import android.util.SparseArray;
 
 /**
@@ -109,7 +110,7 @@ public class MaskViewFactory {
 
         @Override
         public void draw(Canvas canvas) {
-            canvas.drawCircle(super.getRect().left, super.getRect().top, radius, paint);
+            canvas.drawCircle(super.getRect().left + radius, super.getRect().top + radius, radius, paint);
         }
     }
 
